@@ -21,6 +21,7 @@ import {
 import {Col, Row, Grid} from 'react-native-easy-grid';
 import PlayButton from "./components/PlayButton";
 import OnAir from "./components/OnAir";
+import Api from './services/Api';
 
 export default class App extends Component {
     render() {
