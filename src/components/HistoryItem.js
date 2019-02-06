@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Icon, ListItem, Text, View} from "native-base";
+import {Button, Icon, ListItem, Text, View, Toast} from "native-base";
 import {Col, Grid} from 'react-native-easy-grid';
 import RNFetchBlob from 'rn-fetch-blob'
 import {PermissionsAndroid} from 'react-native';
@@ -10,58 +10,47 @@ class HistoryItem extends Component {
     async requestPermission() {
 
         try {
-            const granted = await PermissionsAndroid.request(
+            const granted = await PermissionsAndroid.requestMultiple([
                 PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                {
-                    'title': 'ReactNativeCode Location Permission',
-                    'message': 'ReactNativeCode App needs access to your location '
-                }
-            )
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            ]);
 
-                return true;
-            } else {
-
-                return false;
-            }
+            return granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED && granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED;
         } catch (err) {
             console.warn(err)
         }
     }
 
-    download = (url) => {
-        // url = 'https://cdn1.sefon.me/api/mp3_download/direct/133762/77h_3G9Gd3Vphh7cfD-h4GlCf3YhNfT22VSk_3c5LEcJsMoZrWoaUv53YXxyX7ta/';
+    download = async (url, songName) => {
         url = 'http://dl.heavy-music.ru:81/Amberian%20Dawn/(2010)%20-%20End%20of%20Eden/05.%20Sampo.mp3';
 
         let dirs = RNFetchBlob.fs.dirs;
-        // RNFetchBlob
-        //     .config({
-        //         // DCIMDir is in external storage
-        //         path : dirs.DownloadDir + '/music.mp3'
-        //     })
-        //     .fetch('GET', url)
-        //     .then((res) => RNFetchBlob.fs.scanFile([ { path : res.path(), mime : 'audio/mpeg' } ]))
-        //     .then(() => {
-        //         // scan file success
-        //     })
-        //     .catch((err) => {
-        //         // scan file error
-        //     })
 
-        if (this.requestPermission()) {
+        if (await this.requestPermission()) {
             let path = 'file://' + RNFetchBlob.fs.dirs.DownloadDir;
             RNFetchBlob
                 .config({
                     addAndroidDownloads: {
                         useDownloadManager: true, // <-- this is the only thing required
                         notification: true,
-                        path: path + '/music.mp3',
+                        path: path + '/' + songName + '.mp3',
                     }
                 })
                 .fetch('GET', url)
-                .then((resp) => {
-                    alert(resp.path());
-                })
+                .then(() => {
+                    Toast.show({
+                        text: 'File was successfully downloaded',
+                    })
+                }).catch((error) => {
+                console.log(error);
+            });
+            Toast.show({
+                text: 'File download started',
+            })
+        } else {
+            Toast.show({
+                text: 'Please grant the rights and try again.',
+            })
         }
 
 
@@ -71,7 +60,7 @@ class HistoryItem extends Component {
         let downloadBtn = null;
         if (this.props.data.url) {
             downloadBtn = <Button style={styles.download.button} onPress={() => {
-                this.download(this.props.data.url);
+                this.download(this.props.data.url, this.props.data.title);
             }} primary>
                 <Icon type='FontAwesome5' name='cloud-download-alt'
                       style={styles.download.icon}/>

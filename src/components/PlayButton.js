@@ -1,28 +1,41 @@
 import React, {Component} from 'react'
-import {Button, Icon, View} from "native-base";
+import {Button, Icon, Toast, View, Spinner} from "native-base";
 import Sound from 'react-native-sound';
 
 class PlayButton extends Component {
     constructor(props) {
         super(props);
         this.url = 'http://www.heavy-music.ru:8107/320?type=http&nocache=14';
-        this.state = {play: false};
+        this.state = {play: false, buffering: false};
         this.radio = null;
     }
 
     play = () => {
+        if(this.state.buffering){
+            return;
+        }
 
         const callback = (error, sound) => {
-            sound.play();
-            this.setState({play: true});
+            sound.play((success)=>{
+                this.radio.stop(() => {
+                    this.radio.release();
+                    this.setState({play: false,  buffering: false});
+                    this.play();
+                });
+            });
+            this.setState({play: true, buffering: false});
         };
 
         if (this.state.play) {
             this.radio.stop(() => {
                 this.radio.release();
-                this.setState({play: false})
+                this.setState({play: false, buffering: false})
             });
         } else {
+            Toast.show({
+                text: 'Buffering...',
+            })
+            this.setState({buffering: true});
             this.radio = new Sound(this.url, null, error => callback(error, this.radio));
         }
     }
@@ -33,6 +46,10 @@ class PlayButton extends Component {
             icon = <Icon type='FontAwesome5' name='pause' style={style.icon}/>;
         } else {
             icon = <Icon type='FontAwesome5' name='play' style={style.icon}/>;
+        }
+
+        if(this.state.buffering){
+            icon = <Spinner color='white' />
         }
 
         return (
