@@ -8,19 +8,35 @@ class HistorySong extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            history: []
+            history: [
+                    {
+                        "title": " - ",
+                        "time": "-:-"
+                    },
+                    {
+                        "title": " - ",
+                        "time": "-:-"
+                    },
+                    {
+                        "title": " - ",
+                        "time": "-:-"
+                    },
+                    {
+                        "title": " - ",
+                        "time": "-:-"
+                    },
+            ]
         };
     }
 
     checkHistory(api) {
         api.getHistory().then((res) => {
             this.setState({history: res});
-        });
+        }).catch(() => {});
     }
 
     componentDidMount(): void {
         let api = new Api();
-        this.checkHistory(api);
         setInterval(() => {
             this.checkHistory(api);
         }, 5000);

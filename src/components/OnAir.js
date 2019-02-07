@@ -6,7 +6,7 @@ class OnAir extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            onAir: ''
+            onAir: 'unknown'
         };
     }
 
@@ -14,7 +14,7 @@ class OnAir extends Component {
         api.getOnAir().then((res) => {
             let onAir = res.replace('Now: ', '').replace('</body></html>', '');
             this.setState({onAir: onAir});
-        });
+        }).catch(() => {});
     }
 
     componentDidMount(): void {
