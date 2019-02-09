@@ -37,6 +37,7 @@ class HistorySong extends Component {
 
     componentDidMount(): void {
         let api = new Api();
+        this.checkHistory(api);
         setInterval(() => {
             this.checkHistory(api);
         }, 5000);

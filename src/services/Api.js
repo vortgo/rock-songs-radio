@@ -1,6 +1,6 @@
 class Api {
     getHistory() {
-        return fetch('https://api.myjson.com/bins/bnbkc')
+        return fetch('http://rock-songs.online/api/history')
             .then((res) => res.json()).catch(() => {});
     }
 

@@ -3,6 +3,7 @@ import {Button, Icon, ListItem, Text, View, Toast} from "native-base";
 import {Col, Grid} from 'react-native-easy-grid';
 import RNFetchBlob from 'rn-fetch-blob'
 import {PermissionsAndroid} from 'react-native';
+import Moment from 'moment';
 
 
 class HistoryItem extends Component {
@@ -21,9 +22,20 @@ class HistoryItem extends Component {
         }
     }
 
-    download = async (url, songName) => {
-        url = 'http://dl.heavy-music.ru:81/Amberian%20Dawn/(2010)%20-%20End%20of%20Eden/05.%20Sampo.mp3';
+    getLocalTime(time){
+        if(time === '-:-'){
+            return time;
+        }
 
+        let fromServer = Moment(time);
+        let date = new Date();
+        let offsetInHours = date.getTimezoneOffset() / 60 * -1;
+        fromServer.add(offsetInHours, 'hours');
+
+        return fromServer.format('HH') + ':' +  fromServer.format('mm');
+    }
+
+    download = async (url, songName) => {
         let dirs = RNFetchBlob.fs.dirs;
 
         if (await this.requestPermission()) {
@@ -72,7 +84,7 @@ class HistoryItem extends Component {
                 <Grid>
                     <Col style={{}} size={2}>
                         <View style={styles.viewCenterContent}>
-                            <Text style={styles.time.text}>{this.props.data.time}</Text>
+                            <Text style={styles.time.text}>{this.getLocalTime(this.props.data.time)}</Text>
                         </View>
                     </Col>
                     <Col style={styles.title.col} size={9}>

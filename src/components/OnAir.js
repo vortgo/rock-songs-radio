@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Button, Icon, ListItem, Text, View} from "native-base";
 import Api from '../services/Api';
+import global from '../services/global'
 
 class OnAir extends Component {
     constructor(props) {
@@ -13,6 +14,7 @@ class OnAir extends Component {
     checkCurrentSong(api) {
         api.getOnAir().then((res) => {
             let onAir = res.replace('Now: ', '').replace('</body></html>', '');
+            global.onAir = onAir;
             this.setState({onAir: onAir});
         }).catch(() => {});
     }
