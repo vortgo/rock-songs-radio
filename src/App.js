@@ -13,6 +13,7 @@ import {Col, Row, Grid} from 'react-native-easy-grid';
 import PlayButton from "./components/PlayButton";
 import OnAir from "./components/OnAir";
 import SplashScreen from 'react-native-splash-screen';
+import {AdMobBanner} from 'react-native-admob'
 
 export default class App extends Component {
 
@@ -42,6 +43,12 @@ export default class App extends Component {
                                             <OnAir/>
                                         </Row>
                                     </Grid>
+                                </Row>
+                                <Row size={2}>
+                                    <AdMobBanner
+                                        adSize="smartBanner"
+                                        adUnitID="ca-app-pub-5210104983306981/4274125421"
+                                    />
                                 </Row>
                             </Grid>
                         </ImageBackground>

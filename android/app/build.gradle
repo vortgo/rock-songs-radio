@@ -150,6 +150,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-admob')
     compile project(':react-native-music-control')
     compile project(':rn-fetch-blob')
     compile project(':react-native-vector-icons')
