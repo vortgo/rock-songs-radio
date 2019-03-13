@@ -1,0 +1,4 @@
+#Sun Feb 10 19:51:31 EET 2019
+base.0=/home/vortgo/web/react-native/hello/android/app/build/intermediates/transforms/dexMerger/release/0
+path.0=classes.dex
+renamed.0=classes.dex
